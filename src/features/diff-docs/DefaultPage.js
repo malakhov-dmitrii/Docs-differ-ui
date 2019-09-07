@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import * as actions from "./redux/actions";
 import AppBar from "@material-ui/core/AppBar";
 import { Card, Container, makeStyles, Toolbar, Typography } from "@material-ui/core";
+import UnchangedData from './UnchangedData';
 
 const data = [
 	[
@@ -224,7 +225,7 @@ export const DefaultPage = () => {
         if ((typeof item === "object") && !Array.isArray(item)) {
           switch(item.type) {
             case "blank":
-              return item.text;
+              return <UnchangedData>{item.text}</UnchangedData>;
             case "tumblr":
               return loop(item.data);
             case "tag":
