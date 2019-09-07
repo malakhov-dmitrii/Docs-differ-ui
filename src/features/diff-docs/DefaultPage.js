@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "./redux/actions";
 import AppBar from "@material-ui/core/AppBar";
-import { Card, Container, makeStyles, Toolbar, Tooltip, Typography } from "@material-ui/core";
+import { Card, Container, makeStyles, Toolbar, Typography } from "@material-ui/core";
 
 const data = [
 	[
@@ -221,7 +221,7 @@ export const DefaultPage = () => {
   const loop = (data) => {
     if (Array.isArray(data)) {
       return data.map(item => {
-        if ((typeof item == "object") && !Array.isArray(item)) {
+        if ((typeof item === "object") && !Array.isArray(item)) {
           switch(item.type) {
             case "blank":
               return item.text;
@@ -235,6 +235,7 @@ export const DefaultPage = () => {
         }else if (Array.isArray(item)) {
           return <p>{loop(item)}</p>;
         }
+        return '';
       });
     }
   };
