@@ -1,0 +1,27 @@
+@import '../../styles/mixins';
+
+.container {
+  margin: 100px auto 0;
+}
+
+.cardWrapper {
+  margin: 20px auto;
+  max-width: 400px;
+  min-height: 400px;
+}
+
+.root {
+  margin-top: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  overflow: hidden;
+  //backgroundColor: theme.palette.background.paper,
+}
+
+
+.gridList {
+  border: 1px solid;
+  width: 500px;
+  height: 450px;
+}

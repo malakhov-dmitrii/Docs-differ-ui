@@ -1,2 +1,1 @@
-# Diversity-hack
-
+# README
