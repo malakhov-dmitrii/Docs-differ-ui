@@ -1,0 +1,1 @@
+export const DIFF_DOCS_SKIP_BLANK = 'DIFF_DOCS_SKIP_BLANK';

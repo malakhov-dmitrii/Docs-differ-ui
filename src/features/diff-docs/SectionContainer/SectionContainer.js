@@ -4,19 +4,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from '../redux/actions';
 import UnchangedData from '../UnchangedData/UnchangedData';
-// import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 
-// const useStyles = makeStyles({
-//   root: {
-//     display: 'inline-block',
-//     // justifyContent: 'space-between',
-//     // border: '2px solid',
-//     width: '100%'
-//   },
-// });
+const useStyles = makeStyles({
+  root: {
+    display: 'inline-block',
+    justifyContent: 'space-between',
+    border: '2px solid',
+    width: '100%'
+  },
+});
 
 export const SectionContainer = (props) => {
-  // const classes = useStyles();
+  const classes = useStyles();
 
   return (
     <UnchangedData>{props.children}</UnchangedData>

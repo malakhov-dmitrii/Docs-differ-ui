@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import * as actions from "./redux/actions";
 import AppBar from "@material-ui/core/AppBar";
 import { Card, Container, makeStyles, Toolbar, Typography } from "@material-ui/core";
+import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
 // import UnchangedData from './UnchangedData/UnchangedData';
 import { SectionContainer } from './SectionContainer/SectionContainer';
 
@@ -50,9 +52,9 @@ const data = [
       text: `. `
     },
     {
-      type: "choice",
+      type: "choose",
       value: null,
-      arr: [
+      options: [
           {
               date: new Date(23 * 3600 * 1000),
               document: "one",
@@ -66,7 +68,7 @@ const data = [
       ]
     },
 		{
-			type: "tumblr",
+			type: "add",
       date: new Date(23 * 3600 * 1000),
       document: "one",
 			switch: false,
@@ -129,7 +131,7 @@ const data = [
       tag: "br"
     },
 		{
-			type: "tumblr",
+			type: "remove",
       date: new Date(24 * 3600 * 1000),
       document: "two",
 			switch: false,
@@ -141,9 +143,9 @@ const data = [
                     Step 2: `
 				},
 				{
-					type: "choice",
+					type: "choose",
                     value: null,
-					arr: [
+					options: [
 						{
                             date: new Date(23 * 3600 * 1000),
                             document: "one",
@@ -175,6 +177,7 @@ const data = [
   ]
 ];
 
+
 const useStyles = makeStyles({
   card: {
     marginTop: 100,
@@ -192,7 +195,8 @@ const useStyles = makeStyles({
 
 // <Tooltip title={"Changed here"}><Typography display="inline" className={classes.tooltip}>Accusamus eaque esse</Typography></Tooltip>
 
-export const DefaultPage = () => {
+export const DefaultPage = (props) => {
+  this.state = {skipBlank: 1};
   const classes = useStyles();
 
   const renderTag = (data) => {
@@ -225,8 +229,10 @@ export const DefaultPage = () => {
         if ((typeof item === "object") && !Array.isArray(item)) {
           switch(item.type) {
             case "blank":
-              return <SectionContainer>{item.text}</SectionContainer>;
-            case "tumblr":
+              return props.diffDocs.skipBlank ? <SectionContainer>{item.text}</SectionContainer> : "";
+            case "add":
+                return loop(item.data);
+            case "remove":
               return loop(item.data);
             case "tag":
               return renderTag(item);
@@ -254,12 +260,13 @@ export const DefaultPage = () => {
       </Container>
     );
   };
-
   return (
     <div>
       <AppBar>
         <Toolbar>
-          <h2>Diff docs</h2>
+            <h2>Diff docs</h2>
+            <AddIcon onClick={props.actions.skipBlank}/>
+            <RemoveIcon onClick={props.actions.skipBlank}/>
         </Toolbar>
       </AppBar>
       {renderData(data)}
