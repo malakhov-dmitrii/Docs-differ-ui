@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "./redux/actions";
 import AppBar from "@material-ui/core/AppBar";
-import { Card, Container, makeStyles, Toolbar, Tooltip, Typography } from "@material-ui/core";
+import { Card, Container, makeStyles, Toolbar, Typography } from "@material-ui/core";
 
 const data = [
   {
@@ -175,6 +175,7 @@ export const DefaultPage = () => {
   const classes = useStyles();
 
   const renderTag = (data) => {
+    // eslint-disable-next-line default-case
     switch(data.tag) {
       case "br":
         return <br />;
@@ -185,7 +186,7 @@ export const DefaultPage = () => {
     console.log(data)
     if (Array.isArray(data)) {
       return data.map(item => {
-        if ((typeof item == "object") && !Array.isArray(item)) {
+        if ((typeof item === "object") && !Array.isArray(item)) {
           switch(item.type) {
             case "blank":
               return item.text;
@@ -194,9 +195,10 @@ export const DefaultPage = () => {
             default:
               return "";
           }
-        }else if (Array.isArray(item)) {
+        } else if (Array.isArray(item)) {
           return loop(item);
         }
+        return {};
       });
     }
   };

@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import AppBar from '@material-ui/core/AppBar';
-import { Card, CardContent, CardHeader, Container, Toolbar, Typography } from '@material-ui/core';
+import { Container, Toolbar } from '@material-ui/core';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import { random } from 'lodash';

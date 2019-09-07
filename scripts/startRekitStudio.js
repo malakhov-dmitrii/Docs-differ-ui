@@ -1,4 +1,4 @@
-'use strict';
+
 
 // Start Rekit Studio
 const path = require('path');
