@@ -48,19 +48,19 @@ const data = [
       text: `. `
     },
     {
-      type: "choice",
+      type: "choose",
       value: null,
-      arr: [
-          {
-              date: new Date(23 * 3600 * 1000),
-              document: "one",
-              text: "European"
-          },
-          {
-              date: new Date(24 * 3600 * 1000),
-              document: "two",
-              text: "European"
-          }
+      options: [
+        {
+          date: new Date(23 * 3600 * 1000),
+          document: "one",
+          text: "European"
+        },
+        {
+          date: new Date(24 * 3600 * 1000),
+          document: "two",
+          text: "European"
+        }
       ]
     },
 		{
@@ -139,19 +139,19 @@ const data = [
                     Step 2: `
 				},
 				{
-					type: "choice",
-                    value: null,
-					arr: [
+					type: "choose",
+            value: null,
+					options: [
 						{
-                            date: new Date(23 * 3600 * 1000),
-                            document: "one",
-                            text: "learn"
-                        },
-                        {
-                            date: new Date(24 * 3600 * 1000),
-                            document: "two",
-                            text: "Learn"
-                        }
+                date: new Date(23 * 3600 * 1000),
+                document: "one",
+                text: "learn"
+            },
+            {
+                date: new Date(24 * 3600 * 1000),
+                document: "two",
+                text: "Learn"
+            }
 					]
 				},
 				{
