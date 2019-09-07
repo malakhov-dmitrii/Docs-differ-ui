@@ -175,7 +175,6 @@ const data = [
   ]
 ];
 
-
 const useStyles = makeStyles({
   card: {
     marginTop: 100,
