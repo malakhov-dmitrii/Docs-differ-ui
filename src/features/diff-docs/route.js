@@ -3,6 +3,7 @@
 
 import {
   DefaultPage,
+  Upload,
 } from './';
 
 export default {
@@ -10,5 +11,6 @@ export default {
   name: 'Diff docs',
   childRoutes: [
     { path: 'default-page', name: 'Default page', component: DefaultPage, isIndex: true },
+    { path: 'upload', name: 'Upload', component: Upload },
   ],
 };
