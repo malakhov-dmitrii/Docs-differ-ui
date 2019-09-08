@@ -6,6 +6,33 @@
 
 // NOTE: initialState constant is necessary so that Rekit could auto add initial state when creating async actions.
 const initialState = {
+  source: [
+    [
+      {
+        'type': 'choose',
+        'options': ['this is the', ''],
+      },
+      {
+        'type': 'remove',
+        'text': 'some <b>removed</b> text',
+      },
+      {
+        'type': 'blank',
+        'text': ' first<i> paragraph</i>! it\'s got several lines and- unexpectedly- punctuation signs...',
+      },
+    ],
+    [
+      {
+        'type': 'blank',
+        'text': 'second<b> par</b>. ',
+      },
+      {
+        'type': 'add',
+        'text': 'added text',
+      },
+    ],
+  ],
+  current: [],
 };
 
 export default initialState;

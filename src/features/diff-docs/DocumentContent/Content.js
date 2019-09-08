@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
-import { Popover, Button, Radio, RadioGroup } from '@material-ui/core';
+import { Popover, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   popover: {
     padding: '10px',
+    fontSize: '14px',
+    maxWidth: '480px',
   },
 });
 
@@ -21,7 +23,7 @@ const ColoredSpan = ({ children, color, onMouseEnter }) =>
     onMouseEnter={onMouseEnter}
   >{ReactHtmlParser(children)}</div>;
 
-const mkHint = (originalText, highlightColor) => children => {
+const mkHint = (tag, originalText, highlightColor) => children => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -37,7 +39,7 @@ const mkHint = (originalText, highlightColor) => children => {
   const open = Boolean(anchorEl);
 
   return (
-    <div style={{ 'display': 'inline' }}>
+    <div style={{ 'display': 'inline' }} id={tag}>
       <ColoredSpan
         color={highlightColor}
         onMouseEnter={handlePopoverOpen}
@@ -69,34 +71,61 @@ const mkHint = (originalText, highlightColor) => children => {
 
 };
 
-const AddHint = ({ text }) => mkHint(text, '#74E8B2')(
-  <div>
-    <p>Этот фрагент был добавлен в другой версии документа.<br/>Вы можете принять или отклонить изменение</p>
-    <Button>Принять</Button>
-    <Button>Отклонить</Button>
+
+const AppliedHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#efefef')(
+  <div id={tag}>
+    <p>Вы одобрили применение этого фрагмента, но можете отклонить изменение</p>
+    <Button onClick={() => dispatch({ type: 'REJECT', tag: tag })}>Отклонить</Button>
   </div>,
 );
-const RemoveHint = ({ text }) => mkHint(text, '#FF7D7D')(
+
+const AddHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#74E8B2')(
+  <div id={tag}>
+    <p>Этот фрагент был добавлен в другой версии документа.<br/>Вы можете принять или отклонить изменение</p>
+    <Button onClick={() => dispatch({ type: 'ACCEPT', tag: tag })}>Принять</Button>
+    <Button onClick={() => dispatch({ type: 'REJECT', tag: tag })}>Отклонить</Button>
+  </div>,
+);
+
+const RemoveHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#FF7D7D')(
   <div>
     <p>Этот фрагент был удален в другой версии документа.<br/>Вы можете принять или отклонить изменение</p>
-    <Button>Принять</Button>
-    <Button>Отклонить</Button>
+    <Button onClick={() => dispatch({ type: 'ACCEPT', tag: tag })}>Принять</Button>
+    <Button onClick={() => dispatch({ type: 'REJECT', tag: tag })}>Отклонить</Button>
   </div>,
 );
 
 
-const ChooseHint = ({ options }) => {
+const ChooseHint = ({ tag, options, dispatch }) => {
   if (options.length) {
-    return mkHint(options[0], '#FFEC9B')(
+    return mkHint(tag, options[0], '#FFEC9B')(
       <div>
         <p>Для данного фрагмента есть несколько вариантов изменений</p>
         {options.map((option, i) =>
-          <div>
+          <div onClick={() => dispatch({ type: 'CHOOSE', tag: `${tag}-${i}`})}>
             <input type={'radio'} value={option}/>
             <span>{option}</span>
-          </div>
+          </div>,
         )}
-      </div>
+      </div>,
+    );
+  } else {
+    return null;
+  }
+};
+
+const AppliedChooseHint = ({ tag, options, dispatch }) => {
+  if (options.length) {
+    return mkHint(tag, options[0], '#efefef')(
+      <div>
+        <p>Для данного фрагмента есть несколько вариантов изменений</p>
+        {options.map((option, index) =>
+          <div onClick={() => dispatch({ type: 'CHOOSE', tag: `${tag}-${index}` })}>
+            <input type={'radio'} value={option}/>
+            <span>{option}</span>
+          </div>,
+        )}
+      </div>,
     );
   } else {
     return null;
@@ -104,29 +133,38 @@ const ChooseHint = ({ options }) => {
 };
 
 
-const diffToHint = diff => {
+const diffToHint = (diff, row, col, dispatch) => {
+  const tag = `${row}-${col}`;
+
   switch (diff.type) {
     case 'choose':
-      return <ChooseHint options={diff.options}/>;
+      return <ChooseHint key={col} tag={tag} options={diff.options} dispatch={dispatch}/>;
+    case 'app_choose':
+      return <AppliedChooseHint key={col} tag={tag} options={diff.options} dispatch={dispatch}/>;
     case 'add':
-      return <AddHint text={diff.text}/>;
+      return <AddHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
     case 'remove':
-      return <RemoveHint text={diff.text}/>;
+      return <RemoveHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
+    case 'reviewed':
+      return <AppliedHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
     default:
       return (
-        <div style={{ 'display': 'inline' }}>
+        <div style={{ 'display': 'inline' }} id={tag}>
           {ReactHtmlParser(diff.text)}
         </div>
       );
   }
 };
 
-const Content = ({ data }) => {
+const Content = ({ data, dispatch }) => {
     return (
       <div>
-        {data.map((paragraphContent, index) =>
-          <div key={index}
-               style={{ 'padding': '8px 0 8px 0' }}>{paragraphContent.map(diffToHint)}</div>)}
+        {
+          data.map((paragraphContent, row) =>
+            <div key={row}
+                 style={{ 'padding': '8px 0' }}>{paragraphContent.map((e, idx) => diffToHint(e, row, idx, dispatch))}
+            </div>)
+        }
       </div>
     );
 
