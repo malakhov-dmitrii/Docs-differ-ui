@@ -19,7 +19,7 @@ export class WelcomePage extends Component {
         </a>
         <h1>Добро пожаловать в НЕМОЙОФИС!</h1>
         <p>
-          Загрузить файл в <a href="http://localhost:6075/diff-docs/upload">НЕМОЙОФИС</a>
+          Загрузить файл в <a href="/diff-docs/upload">НЕМОЙОФИС</a>
         </p>
       </div>
     );

@@ -24,7 +24,7 @@ export class DefaultPage extends Component {
         <div className="app-intro">
           <ul>
             <li>
-              Загрузить файл в <a href="http://localhost:6075/diff-docs/upload">НЕМОЙОФИС</a>
+              Загрузить файл в <a href="diff-docs/upload">НЕМОЙОФИС</a>
             </li>
           </ul>
         </div>
