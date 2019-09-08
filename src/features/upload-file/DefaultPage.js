@@ -18,8 +18,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
-  
+  Divider, Typography,
+
 } from '@material-ui/core';
 
 export class DefaultPage extends Component {
@@ -78,7 +78,12 @@ export class DefaultPage extends Component {
           <AppBar  style={{background:"#00aaf1"}}>
             <Toolbar>
               <img src={logo} />
-              <h1>Твой Офис</h1>
+              <Typography variant="h4" style={{
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                marginLeft: 20,
+                fontSize: 28,
+              }}>немойофис</Typography>
             </Toolbar>
           </AppBar>
           <div style={{ 'marginTop': '100px' }}>
@@ -135,7 +140,7 @@ export class DefaultPage extends Component {
         <div style={{"margin": "auto", "width": "fit-content"}}>
           <img style={{"width": "1600px"}} src="https://media0.giphy.com/media/349qKnoIBHK1i/giphy.gif?cid=790b7611984b20a4eebfc7016f4619bcc27ad9accd132757&rid=giphy.gif" />
         </div>
-      );      
+      );
     }
   }
 }
