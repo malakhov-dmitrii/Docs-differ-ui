@@ -7,6 +7,7 @@ import _ from 'lodash';
 import fitRankingRoute from '../features/fit-ranking/route';
 import posterRoute from '../features/poster/route';
 import diffDocsRoute from '../features/diff-docs/route';
+import uploadFileRoute from '../features/upload-file/route';
 
 // NOTE: DO NOT CHANGE the 'childRoutes' name and the declaration pattern.
 // This is used for Rekit cmds to register routes config for new features, and remove config when remove features, etc.
@@ -17,6 +18,7 @@ const childRoutes = [
   fitRankingRoute,
   posterRoute,
   diffDocsRoute,
+  uploadFileRoute,
 ];
 
 const routes = [{

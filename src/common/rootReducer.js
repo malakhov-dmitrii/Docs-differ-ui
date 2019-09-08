@@ -6,6 +6,7 @@ import examplesReducer from '../features/examples/redux/reducer';
 import fitRankingReducer from '../features/fit-ranking/redux/reducer';
 import posterReducer from '../features/poster/redux/reducer';
 import diffDocsReducer from '../features/diff-docs/redux/reducer';
+import uploadFileReducer from '../features/upload-file/redux/reducer';
 
 // NOTE 1: DO NOT CHANGE the 'reducerMap' name and the declaration pattern.
 // This is used for Rekit cmds to register new features, remove features, etc.
@@ -20,6 +21,7 @@ const reducerMap = {
   fitRanking: fitRankingReducer,
   poster: posterReducer,
   diffDocs: diffDocsReducer,
+  uploadFile: uploadFileReducer,
 };
 
 export default combineReducers(reducerMap);

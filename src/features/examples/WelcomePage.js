@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import rekitLogo from '../../images/rekit-logo.svg';
+import rekitLogo from '../../images/logo.png';
 import * as actions from './redux/actions';
 
 export class WelcomePage extends Component {
