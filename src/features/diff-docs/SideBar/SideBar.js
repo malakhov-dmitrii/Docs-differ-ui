@@ -27,15 +27,14 @@ const SideBarItem = ({ text, row, color, onClick }) => {
 };
 
 const wrapAddRem = data => {
-    const classes = makeStyles(iconStyles)();
     return (<div>
                 {data}
                 <div style={{"text-align": "right", "margin-right": "35px"}}>
-                    <CheckIcon className={classes.successIcon} onClick={()=>{}}/>
-                    <CloseIcon color="secondary" onClick={()=>{}}/>
+                    <CheckIcon />
+                    <CloseIcon color="secondary"/>
                 </div>
             </div>);
-} 
+}
 
 const mkItem = (diff, row, index, onClick) => {
   switch (diff.type) {
