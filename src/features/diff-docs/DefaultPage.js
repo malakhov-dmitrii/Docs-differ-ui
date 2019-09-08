@@ -3,6 +3,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as actions from './redux/actions';
 import AppBar from '@material-ui/core/AppBar';
+import logo from '../../images/logo.png';
+import { withRouter } from 'react-router-dom';
 import {
   Card,
   Container,
@@ -12,11 +14,13 @@ import {
   TableCell,
   TableRow,
   Toolbar,
+  Typography
 } from '@material-ui/core';
 import { data as stubData } from './mockData';
 
 import Content from './DocumentContent/Content';
 import SideBar from './SideBar/SideBar';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles({
   card: {
@@ -31,6 +35,9 @@ const useStyles = makeStyles({
     backgroundColor: 'black',
     color: 'white',
   },
+  dlyabossa: {
+    background: "#81f981"
+  },
 });
 
 
@@ -39,12 +46,18 @@ class DefaultPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: stubData,
+      data: [],
+      flag: 1,
     };
 
     this.handleDispatch = this.handleDispatch.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.diffDocs.source !== this.props.diffDocs.source) {
+      this.setState({data: this.props.diffDocs.source});
+    } 
+  }
 
   handleDispatch(event) {
     console.log(event);
@@ -79,40 +92,64 @@ class DefaultPage extends React.Component {
         break;
       default:
     }
+  }
 
-
+  handlerRedirect = () => {
+    this.setState({flag: 0});
   }
 
   render() {
-    return (
-      <div>
-        <AppBar>
-          <Toolbar style={{ background: '#00AAF2' }}>
-            <h2>Diff docs</h2>
-          </Toolbar>
-        </AppBar>
-        <div style={{ 'marginTop': '100px' }}>
-          <Table style={{ 'maxWidth': '80%', 'margin': '0 auto' }}>
-            <TableBody>
-              <TableRow>
-                <TableCell style={{ verticalAlign: 'top' }}>
-                  <Container>
-                    <Card style={{ 'padding': '20px' }}>
-                      <h3>Document Diff</h3>
-                      <Content data={this.state.data} dispatch={this.handleDispatch}/>
-                    </Card>
-                  </Container>
-                </TableCell>
-                <TableCell style={{ 'width': 300, verticalAlign: 'top' }}>
-                  <SideBar data={this.state.data}/>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+    if (this.state.flag) {
+        return (
+        <div>
+            <AppBar  style={{background:"#00aaf1"}}>
+            <Toolbar>
+                <img src={logo} />
+                <Typography variant="h4" style={{
+                textTransform: 'uppercase',
+                fontWeight: 700,
+                marginLeft: 20,
+                fontSize: 28,
+                }}>немойофис</Typography>
+            </Toolbar>
+            </AppBar>
+            <div style={{ 'marginTop': '100px' }}>
+            <Table style={{ 'maxWidth': '80%', 'margin': '0 auto' }}>
+                <TableBody>
+                <TableRow>
+                    <TableCell style={{ verticalAlign: 'top' }}>
+                    <Container>
+                        <Card style={{ 'padding': '20px' }}>
+                        <h3>Document Diff</h3>
+                        <Content data={this.state.data} dispatch={this.handleDispatch}/>
+                        </Card>
+                    </Container>
+                    </TableCell>
+                    <TableCell style={{ 'width': 300, verticalAlign: 'top' }}>
+                    <SideBar data={this.state.data}/>
+                        <div style={{"margin": "auto", "width": "fit-content", "margin-top": "20px"}}>
+                            <Button
+                                variant="contained"
+                                style={{"width": "300px", "background": "#00aaf1","color": "white"}}
+                                onClick={()=>{this.handlerRedirect()}}
+                                >
+                                Отправить боссу
+                            </Button>
+                        </div>
+                    </TableCell>
+                </TableRow>
+                </TableBody>
+            </Table>
+            </div>
         </div>
-      </div>
-
-    );
+        );
+    } else {
+        return (
+          <div style={{"margin": "auto", "width": "fit-content"}}>
+            <img style={{"width": "1600px"}} src="https://media0.giphy.com/media/349qKnoIBHK1i/giphy.gif?cid=790b7611984b20a4eebfc7016f4619bcc27ad9accd132757&rid=giphy.gif" />
+          </div>
+        );
+    }
   }
 
 }
@@ -134,4 +171,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(DefaultPage);
+)(withRouter(DefaultPage));

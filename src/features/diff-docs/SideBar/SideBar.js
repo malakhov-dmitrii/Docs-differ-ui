@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
-
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
+import { makeStyles } from '@material-ui/core/styles';
 const SideBarItem = ({ text, row, color, onClick }) => {
 
   return (
@@ -24,6 +26,17 @@ const SideBarItem = ({ text, row, color, onClick }) => {
     </div>);
 };
 
+const wrapAddRem = data => {
+    const classes = makeStyles(iconStyles)();
+    return (<div>
+                {data}
+                <div style={{"text-align": "right", "margin-right": "35px"}}>
+                    <CheckIcon className={classes.successIcon} onClick={()=>{}}/>
+                    <CloseIcon color="secondary" onClick={()=>{}}/>
+                </div>
+            </div>);
+} 
+
 const mkItem = (diff, row, index, onClick) => {
   switch (diff.type) {
     case 'choose':
@@ -34,9 +47,9 @@ const mkItem = (diff, row, index, onClick) => {
         onClick={() => onClick(row, index)}
       />;
     case 'add':
-      return <SideBarItem text={diff.text} color={'#74E8B2'} row={row} onClick={() => onClick(row, index)}/>;
+      return wrapAddRem(<SideBarItem text={diff.text} color={'#74E8B2'} row={row} onClick={() => onClick(row, index)}/>);
     case 'remove':
-      return <SideBarItem text={diff.text} color={'#FF7D7D'} row={row} onClick={() => onClick(row, index)}/>;
+      return wrapAddRem(<SideBarItem text={diff.text} color={'#FF7D7D'} row={row} onClick={() => onClick(row, index)}/>);
     default:
       return (<div style={{ 'display': 'inline' }}/>);
   }
@@ -54,6 +67,17 @@ const scrollToItem = (row, index) => {
     }
   }
 };
+
+function iconStyles() {
+    return {
+      successIcon: {
+        color: 'green',
+      },
+      errorIcon: {
+        color: 'red',
+      },
+    }
+}
 
 const SideBar = ({ data }) => (
   <div style={{ maxHeight: '700px', overflow: 'scroll' }}>

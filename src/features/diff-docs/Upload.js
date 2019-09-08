@@ -53,16 +53,14 @@ export class DefaultPage extends Component {
   }
 
   onClickHandler = () => {
-    const data = new FormData() 
-    data.append('file', this.state.selectedFile)
-    axios.post("http://51.15.36.48/docs/load", data, { // receive two parameter endpoint url ,form data 
-      })
-      .then(res => { // then print response status
-        this.props.history.push('/diff-docs');
-    })
+    const data = new FormData();
+    data.append('file', this.state.selectedFile);
+    this.props.actions.fetchMerge(data);
+    this.props.history.push('/diff-docs');
 }
 
   render() {
+    if (this.props.fetchMergePending) return 'Lalka ebanaya'
     let listFiles = this.state.files.map((item, id) => {
       return (
         <div>
