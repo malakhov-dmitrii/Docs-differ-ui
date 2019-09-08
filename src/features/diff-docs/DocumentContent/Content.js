@@ -2,6 +2,7 @@ import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { Popover, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   popover: {
@@ -128,8 +129,13 @@ const ChooseHint = ({ tag, options, dispatch }) => {
         <p>Для данного фрагмента есть несколько вариантов изменений</p>
         {options.map((option, i) =>
           <div onClick={() => dispatch({ type: 'CHOOSE', tag: `${tag}-${i}` })}>
-            <input type={'radio'} value={option}/>
-            <span>{option}</span>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <input type='radio' value={option}/>
+              <Typography>{(ReactHtmlParser(option))}</Typography>
+            </label>
           </div>,
         )}
       </div>,
