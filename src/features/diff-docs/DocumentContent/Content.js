@@ -11,10 +11,10 @@ const useStyles = makeStyles({
   },
 });
 
-const ColoredSpan = ({ children, color, onMouseEnter }) =>
+const ColoredSpan = ({ children, className, onMouseEnter }) =>
   <div
+    className={className}
     style={{
-      'background': color,
       'padding': '3px 4px',
       'marginRight': '2px',
       'borderRadius': '3px',
@@ -23,7 +23,7 @@ const ColoredSpan = ({ children, color, onMouseEnter }) =>
     onMouseEnter={onMouseEnter}
   >{ReactHtmlParser(children)}</div>;
 
-const mkHint = (tag, originalText, highlightColor) => children => {
+const mkHint = (tag, originalText, highlightColor, isTable) => children => {
   const classes = useStyles();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -38,48 +38,65 @@ const mkHint = (tag, originalText, highlightColor) => children => {
 
   const open = Boolean(anchorEl);
 
+  const popover = (
+    <Popover
+      classes={{
+        paper: classes.popover,
+      }}
+      open={open}
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+      onClose={handlePopoverClose}
+      disableRestoreFocus
+    >
+      {children}
+    </Popover>
+  );
+
+  if (isTable) {
+    return ReactHtmlParser(originalText, {
+      preprocessNodes: (nodes) => {
+        nodes[0].attribs = {
+          'class': highlightColor,
+          'onmouseenter': handlePopoverOpen,
+          'onmouseleave': handlePopoverClose,
+        };
+        return nodes;
+      },
+    });
+  }
+
   return (
     <div style={{ 'display': 'inline' }} id={tag}>
       <ColoredSpan
-        color={highlightColor}
+        className={highlightColor}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
       >
         {originalText}
       </ColoredSpan>
-      <Popover
-        classes={{
-          paper: classes.popover,
-        }}
-        open={open}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        onClose={handlePopoverClose}
-        disableRestoreFocus
-      >
-        {children}
-      </Popover>
+      {popover}
     </div>
   );
 
 };
 
 
-const AppliedHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#efefef')(
+const AppliedHint = ({ tag, text, dispatch, isTable }) => mkHint(tag, text, 'applied', isTable)(
   <div id={tag}>
     <p>Вы одобрили применение этого фрагмента, но можете отклонить изменение</p>
     <Button onClick={() => dispatch({ type: 'REJECT', tag: tag })}>Отклонить</Button>
   </div>,
 );
 
-const AddHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#74E8B2')(
+const AddHint = ({ tag, text, dispatch, isTable }) => mkHint(tag, text, 'add', isTable)(
   <div id={tag}>
     <p>Этот фрагент был добавлен в другой версии документа.<br/>Вы можете принять или отклонить изменение</p>
     <Button onClick={() => dispatch({ type: 'ACCEPT', tag: tag })}>Принять</Button>
@@ -87,7 +104,7 @@ const AddHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#74E8B2')(
   </div>,
 );
 
-const RemoveHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#FF7D7D')(
+const RemoveHint = ({ tag, text, dispatch, isTable }) => mkHint(tag, text, 'remove', isTable)(
   <div>
     <p>Этот фрагент был удален в другой версии документа.<br/>Вы можете принять или отклонить изменение</p>
     <Button onClick={() => dispatch({ type: 'ACCEPT', tag: tag })}>Принять</Button>
@@ -95,14 +112,22 @@ const RemoveHint = ({ tag, text, dispatch }) => mkHint(tag, text, '#FF7D7D')(
   </div>,
 );
 
+const TableWrapper = ({ tag, content, dispatch }) => (
+  <table>
+    <tbody>
+    {content.map((row, idx) => diffToHint(row, tag, idx, dispatch, true))}
+    </tbody>
+  </table>
+);
+
 
 const ChooseHint = ({ tag, options, dispatch }) => {
   if (options.length) {
-    return mkHint(tag, options[0], '#FFEC9B')(
+    return mkHint(tag, options[0], 'choose')(
       <div>
         <p>Для данного фрагмента есть несколько вариантов изменений</p>
         {options.map((option, i) =>
-          <div onClick={() => dispatch({ type: 'CHOOSE', tag: `${tag}-${i}`})}>
+          <div onClick={() => dispatch({ type: 'CHOOSE', tag: `${tag}-${i}` })}>
             <input type={'radio'} value={option}/>
             <span>{option}</span>
           </div>,
@@ -116,7 +141,7 @@ const ChooseHint = ({ tag, options, dispatch }) => {
 
 const AppliedChooseHint = ({ tag, options, dispatch }) => {
   if (options.length) {
-    return mkHint(tag, options[0], '#efefef')(
+    return mkHint(tag, options[0], 'applied')(
       <div>
         <p>Для данного фрагмента есть несколько вариантов изменений</p>
         {options.map((option, index) =>
@@ -133,7 +158,7 @@ const AppliedChooseHint = ({ tag, options, dispatch }) => {
 };
 
 
-const diffToHint = (diff, row, col, dispatch) => {
+const diffToHint = (diff, row, col, dispatch, isTable) => {
   const tag = `${row}-${col}`;
 
   switch (diff.type) {
@@ -142,23 +167,30 @@ const diffToHint = (diff, row, col, dispatch) => {
     case 'app_choose':
       return <AppliedChooseHint key={col} tag={tag} options={diff.options} dispatch={dispatch}/>;
     case 'add':
-      return <AddHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
+      return <AddHint key={col} tag={tag} text={diff.text} dispatch={dispatch} isTable={isTable}/>;
     case 'remove':
-      return <RemoveHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
+      return <RemoveHint key={col} tag={tag} text={diff.text} dispatch={dispatch} isTable={isTable}/>;
     case 'reviewed':
-      return <AppliedHint key={col} tag={tag} text={diff.text} dispatch={dispatch}/>;
+      return <AppliedHint key={col} tag={tag} text={diff.text} dispatch={dispatch} isTable={isTable}/>;
+    case 'table':
+      return <TableWrapper content={diff.content} tag={tag} dispatch={dispatch}/>;
     default:
-      return (
-        <div style={{ 'display': 'inline' }} id={tag}>
-          {ReactHtmlParser(diff.text)}
-        </div>
-      );
+      if (isTable) {
+        return ReactHtmlParser(diff.text);
+      } else {
+        return (
+          <div style={{ 'display': 'inline' }} id={tag}>
+            {ReactHtmlParser(diff.text)}
+          </div>
+        );
+      }
+
   }
 };
 
 const Content = ({ data, dispatch }) => {
     return (
-      <div>
+      <div className={'diff-wrapper'}>
         {
           data.map((paragraphContent, row) =>
             <div key={row}

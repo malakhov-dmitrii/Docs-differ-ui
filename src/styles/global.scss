@@ -6,8 +6,37 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+
+
 }
 
-.styled-popover {
-  padding: 10px;
+.diff-wrapper {
+  table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 1px solid #555555;
+
+    td {
+      border: 1px solid #555555;
+      padding: 4px;
+      max-width: 150px;
+    }
+  }
+
+  .remove {
+    background-color: #FF7D7D !important;
+  }
+
+  .add {
+    background-color: #74E8B2 !important;
+  }
+
+  .choose {
+    background-color: #FFEC9B !important;
+  }
+
+  .applied {
+    background-color: #EFEFEF !important;
+  }
+
 }
